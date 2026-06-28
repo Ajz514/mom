@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>祝親愛的媽媽生日快樂</title>
+    <style>
+    
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Noto+Sans+TC:wght@500;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Fredoka', 'Noto Sans TC', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            /* 參考 image_43641a.jpg 的微粉紅格紋與插畫風格背景 */
+            background-color: #ffeef2;
+            background-image: 
+                linear-gradient(rgba(255, 182, 193, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 182, 193, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 背景可愛裝飾（彩帶、氣球、星星） */
+        .decorations {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .bunting {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: radial-gradient(circle at 50% -20%, transparent 50%, #ff8fa3 55%, #ffb3c1 60%, transparent 65%);
+            background-size: 40px 60px;
+            opacity: 0.7;
+        }
+        .balloon {
+            position: absolute;
+            font-size: 2.5rem;
+            animation: float 4s ease-in-out infinite;
+        }
+        .b1 { top: 20%; left: 10%; animation-delay: 0s; }
+        .b2 { top: 15%; right: 10%; animation-delay: 1s; }
+        .star {
+            position: absolute;
+            color: #ff4d6d;
+            font-size: 1.5rem;
+            animation: twinkle 2s infinite ease-in-out;
+        }
+        .s1 { top: 40%; left: 15%; animation-delay: 0.5s; }
+        .s2 { top: 30%; right: 20%; animation-delay: 1.2s; }
+        .s3 { bottom: 20%; left: 25%; animation-delay: 0s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+     
+        .password-container {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 30px;
+            border: 4px solid #000; /* 仿插畫黑粗邊 */
+            box-shadow: 8px 8px 0px #ffb3c1;
+            text-align: center;
+            max-width: 420px;
+            width: 90%;
+            z-index: 10;
+            transition: all 0.5s ease;
+        }
+
+        
+        .main-title {
+            font-size: 2.5rem;
+            color: #ff4d6d;
+            margin: 10px 0;
+            -webkit-text-stroke: 1.5px #000;
+            text-shadow: 3px 3px 0px #000;
+            font-weight: 600;
+        }
+
+        .hint-text {
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            background: #fff0f3;
+            padding: 12px;
+            border-radius: 15px;
+            border: 2px dashed #ff8fa3;
+        }
+
+        .pwd-input {
+            width: 85%;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border: 3px solid #000;
+            border-radius: 20px;
+            outline: none;
+            text-align: center;
+            box-shadow: 4px 4px 0px #000;
+            margin-bottom: 20px;
+        }
+
+        /* 精美按鈕 */
+        .btn {
+            background: #ff4d6d;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 12px 35px;
+            border: 3px solid #000;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px #000;
+            transition: 0.2s;
+        }
+        .btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000;
+            background: #ff758f;
+        }
+        .btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        .error-msg {
+            color: #d90429;
+            font-weight: bold;
+            margin-top: 15px;
+            min-height: 20px;
+        }
+
+        
+        .stage-container {
+            display: none;
+            z-index: 10;
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* 媽媽的大頭貼與點擊按鈕區（參考 image_43641a.jpg） */
+        .avatar-wrap {
+            position: relative;
+            display: inline-block;
+            margin: 20px auto;
+        }
+   .avatar {
+            width: 180px;          /* 保持你的原設定 */
+            height: 180px;         /* 保持你的原設定 */
+            border-radius: 50%;    /* 保持你的原設定 */
+            border: 5px solid #000; /* 保持你的原設定 */
+            overflow: hidden;      /* 【關鍵】確保照片溢出的部分會被裁切掉 */
+            background-color: transparent; /* 【關鍵】將原本露出的黑色背景改為透明 */
+            box-shadow: 5px 5px 0px #000; /* 保持你的原設定 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* 媽媽照片替代插畫 (可換成真實照片) */
+        .avatar img {
+            width: 100%;         
+            height: 100%;          
+            object-fit: cover;   
+            object-position: center; 
+            border-radius: 50%;   
+            display: block;
+            }
+        .name-tag {
+            background: #ff758f;
+            color: white;
+            border: 3px solid #000;
+            padding: 5px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: -15px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 3px 3px 0px #000;
+        }
+
+        /* 點擊信封按鈕（參考 image_43641a.jpg 的 Click Here 按鈕） */
+        .open-card-btn {
+            background: #fff;
+            color: #000;
+            border: 3px solid #000;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px #ff4d6d;
+            margin-top: 20px;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .open-card-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 6px 6px 0px #ff4d6d;
+        }
+
+        /* ─── 彈出式 3D 翻開卡片遮罩層 ─── */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* 關閉卡片按鈕 */
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: 3px solid #000;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 3px 3px 0px #000;
+            z-index: 110;
+        }
+
+        /* 3D 卡片容器（完全模擬 image_436422.jpg 的翻開角度與發光效果） */
+        .card-perspective {
+            perspective: 1500px;
+            width: 90%;
+            max-width: 650px;
+            height: 450px;
+        }
+        
+        .birthday-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            /* 預設微微向左旋轉，呈現出 image_436422.jpg 的立體透視角 */
+            transform: rotateX(10deg) rotateY(-15deg);
+            transition: transform 0.5s ease;
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.5); /* 粉紅霓虹發光 */
+        }
+
+        /* 卡片頁面共通樣式 */
+        .card-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            backface-visibility: hidden;
+            transform-origin: right center;
+            transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* 左側封面（翻開後在外側看不到，但內側是粉紅底襯） */
+        .page-left-outside {
+            background: #ff4d6d;
+            border: 4px solid #000;
+            border-right: none;
+            border-radius: 15px 0 0 15px;
+            width: 50%;
+            left: 0;
+            z-index: 5;
+            transform: rotateY(0deg);
+        }
+        /* 當打開卡片時，左側封面往左翻開 180 度 */
+        .overlay.active .page-left-outside {
+            transform: rotateY(-180deg);
+        }
+
+        /* 左側內頁：放媽媽頭貼與 HAPPY BIRTHDAY 反向字樣（完全重現 image_436422.jpg 佈局） */
+        .page-left-inside {
+            background: #ff758f;
+            border: 4px solid #000;
+            border-radius: 15px 0 0 15px;
+            width: 50%;
+            left: 0;
+            z-index: 4;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: white;
+            transform: rotateY(0deg); /* 透過上一層翻轉露出 */
+        }
+        .page-left-inside .mini-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #000;
+            background: #fff;
+            margin-bottom: 15px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.2rem;
+        }
+        .page-left-inside .mini-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .page-left-inside h2 {
+            font-size: 1.8rem;
+            text-align: center;
+            -webkit-text-stroke: 1px #000;
+            text-shadow: 2px 2px 0px #000;
+            margin: 5px 0;
+            line-height: 1.2;
+        }
+
+        /* 右側內頁：最核心的手寫信區域 */
+        .page-right {
+            background: #ff8fa3;
+            border: 4px solid #000;
+            border-left: 2px solid #000;
+            border-radius: 0 15px 15px 0;
+            width: 50%;
+            left: 50%;
+            z-index: 3;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: inset 5px 0 15px rgba(0,0,0,0.1);
+        }
+        
+        /* 信件手寫字體與藍色螢光筆劃重點效果（重現 image_436422.jpg） */
+        .letter-to {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1.5px 1.5px 0px #000;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .letter-content {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #fff;
+            overflow-y: auto;
+            padding-right: 5px;
+            text-align: left;
+        }
+        /* 螢光筆醒目提示樣式 */
+        
+        .letter-footer {
+            margin-top: auto;
+            text-align: right;
+            font-size: 0.9rem;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 1px 1px 0px #000;
+        }
+
+        /* 願望兌換券（排版在下方，讓互動更有樂趣） */
+        .coupon-section {
+            margin-top: 30px;
+        }
+        .coupon-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            -webkit-text-stroke: 0.5px #000;
+            margin-bottom: 15px;
+            color: #ff4d6d;
+        }
+        .coupon-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .coupon-card {
+            background: #fff;
+            border: 3px solid #000;
+            border-radius: 15px;
+            padding: 15px;
+            font-weight: bold;
+            color: #ff4d6d;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px #000;
+            transition: 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .coupon-card:hover {
+            transform: scale(1.03);
+            background: #fff0f3;
+        }
+        .coupon-card.used {
+            background: #e0e0e0 !important;
+            color: #999 !important;
+            border-color: #999 !important;
+            box-shadow: 2px 2px 0px #999 !important;
+            text-decoration: line-through;
+            transform: none !important;
+        }
+
+        /* 針對手機版做特化排版，防止 3D 卡片跑版 */
+        @media (max-width: 600px) {
+            .card-perspective {
+                height: 380px;
+            }
+            .letter-content {
+                font-size: 0.8rem;
+                line-height: 1.5;
+            }
+            .page-left-inside h2 {
+                font-size: 1.2rem;
+            }
+            .coupon-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 氛圍插畫背景裝飾 -->
+    <div class="decorations">
+        <div class="bunting"></div>
+        <div class="balloon b1">🎈</div>
+        <div class="balloon b2">🎈</div>
+        <div class="star s1">✦</div>
+        <div class="star s2">✦</div>
+        <div class="star s3">✦</div>
+    </div>
+
+    <!-- 🔒 階段一：保留的密碼解鎖功能 -->
+    <div id="lock-stage" class="password-container">
+        <div style="font-size: 3.5rem; margin-bottom: 10px;">🎂</div>
+        <h1 class="main-title">MOM'S DAY</h1>
+        <div class="hint-text">
+            <strong>💖 專屬解鎖密碼提示：</strong><br>
+            請輸入妳的四碼生日（如：0629）<br>
+        </div>
+        <input type="text" id="pwd-field" class="pwd-input" placeholder="請輸入解鎖密碼..." onkeydown="if(event.key==='Enter') verifyPassword()">
+        <br>
+        <button class="btn" onclick="verifyPassword()">驗證解鎖</button>
+        <div id="error-output" class="error-msg"></div>
+    </div>
+
+    <!-- 🔓 階段二：解鎖後的精美主舞台 -->
+    <div id="main-stage" class="stage-container">
+        <h1 class="main-title" style="font-size: 3rem;">Happy Birthday!</h1>
+        
+        <!-- 仿照 image_43641a.jpg 的大頭貼與標籤外觀 -->
+        <div class="avatar-wrap">
+            <div class="avatar">
+              
+                <img src="IMG_0021.jpg" alt="">
+            </div>
+            <br>
+            <div class="name-tag">祝我親愛的媽媽</div>
+        </div>
+
+        <br>
+
+        <!-- 點擊彈出卡片按鈕（對應 image_43641a.jpg 的 Click Here 按鈕） -->
+        <button class="open-card-btn" onclick="toggleCard(true)">
+            <span>點這裡打開卡片 ✉</span>
+        </button>
+
+       
+    </div>
+
+    <!-- ─── 彈出式 3D 卡片（對應 image_436422.jpg 的高還原舞台） ─── -->
+    <div id="card-overlay" class="overlay">
+        <button class="close-btn" onclick="toggleCard(false)">×</button>
+        
+        <div class="card-perspective">
+            <div class="birthday-card">
+                
+                <!-- 左外側（封面，開啟時會向左掀開 180 度） -->
+                <div class="card-page page-left-outside"></div>
+
+                <!-- 左內頁（重現 image_436422.jpg：小頭貼與 Happy Birthday 字樣） -->
+                <div class="card-page page-left-inside">
+                    <div class="mini-avatar">
+                        <img src="IMG_0021.jpg" alt="">
+                    </div>
+                    <p style="margin:0; font-weight:bold; font-size:0.9rem;">To: 最愛的媽媽</p>
+                    <h2>HAPPY</h2>
+                    <h2>BIRTHDAY</h2>
+                </div>
+
+             
+                <div class="card-page page-right">
+                    <div class="letter-to">To You! 💕</div>
+                    <div class="letter-content">
+                        <span class="highlight">親愛的媽媽生日快樂！🎂</span><br>
+                        在今天這個特別的日子裡，我想向全宇宙最棒、最美麗的媽媽說聲辛苦了<br>
+                        謝謝妳一直以來對我們無微不至的照顧與包容。<br>
+                        <span class="highlight">有妳的家天天都充滿了溫暖。</span><br>
+                        新的一歲 希望媽媽可以少操心一點 多愛自己一點！<br>
+                        <span class="highlight">祝妳永遠青春美麗、身體健康、天天開心！</span><br>
+                      
+                    </div>
+                    <div class="letter-footer">
+                        愛妳的聖傑 敬上 
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 互動控制 JavaScript -->
+    <script>
+        // 密碼驗證函數
+        function verifyPassword() {
+            const input = document.getElementById('pwd-field').value.trim();
+            const errorOutput = document.getElementById('error-output');
+            
+            // 密碼自訂：支援生日四碼、大美女
+            if (input === '0629' || input === '大美女' || input === '媽媽' || input === '1234') {
+                // 隱藏解鎖盒子，顯示主畫面
+                document.getElementById('lock-stage').style.display = 'none';
+                document.getElementById('main-stage').style.display = 'block';
+                
+                // 自動幫媽媽震動驚喜一下（如果裝置支援）
+                if(navigator.vibrate) navigator.vibrate(200);
+            } else {
+                errorOutput.innerText = "❌ 密碼不對喔！提示：妳的生日是什麼？";
+                document.getElementById('pwd-field').value = '';
+            }
+        }
+
+        // 卡片彈窗切換控制
+        function toggleCard(isOpen) {
+            const overlay = document.getElementById('card-overlay');
+            if (isOpen) {
+                overlay.classList.add('active');
+            } else {
+                overlay.classList.remove('active');
+            }
+        }
+
+      
+        
+    </script>
+</body>
+</html>
